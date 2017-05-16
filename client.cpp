@@ -33,9 +33,9 @@ std::string prepareJsonString(std::pair<double, double> coordinates, std::vector
         {
             writer.StartObject();
             writer.Key("Id");
-            writer.Int(std::get<0>(*it));
+            writer.Uint(std::get<0>(*it));
             writer.Key("Count");
-            writer.Int(std::get<1>(*it));
+            writer.Uint(std::get<1>(*it));
             writer.EndObject();
         }
         writer.EndArray();
