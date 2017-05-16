@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility> // std::pair
 #include <boost/asio.hpp>
-//#include "rapidjson/document.h"
+#include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 
@@ -17,21 +17,29 @@ std::string prepareJsonString(std::pair<double, double> coordinates, std::vector
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     writer.StartObject();
-    writer.Key("coordinates");
+    writer.Key("Coordinates");
         writer.StartObject();
-        writer.String("longitude");
+        writer.String("Longitude");
         writer.Double(std::get<0>(coordinates));
-        writer.String("lattitude");
+        writer.String("Latitude");
         writer.Double(std::get<1>(coordinates));
         writer.EndObject();
-    writer.Key("list");
-        writer.StartObject(); // new object under key "list"
+
+
+        writer.Key("List");
+        writer.StartArray();// new array for list grugs
+         // new object under key "list"
         for(auto it = list.begin(); it < list.end(); ++it)
         {
+            writer.StartObject();
+            writer.Key("Id");
             writer.String(std::get<0>(*it).c_str(), std::get<0>(*it).length());
+            writer.Key("Count");
             writer.Int(std::get<1>(*it));
+            writer.EndObject();
         }
-        writer.EndObject(); // end object "list"
+        writer.EndArray();
+//        writer.EndObject(); // end object "list"
     writer.EndObject();
     std::string json_list = buffer.GetString();
 
@@ -67,6 +75,7 @@ int main(int argc, char* argv[])
     boost::asio::connect(s, resolver.resolve({argv[1], argv[2]}));
 
     s.send(boost::asio::buffer(json_list, json_list.length()));
+    std::cout << "write: " << json_list << std::endl;
 
     std::string reply(max_length, '\0');
     size_t reply_length = s.read_some(boost::asio::buffer((char*)reply.c_str(), max_length));
