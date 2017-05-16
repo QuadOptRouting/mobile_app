@@ -12,7 +12,7 @@ using boost::asio::ip::tcp;
 
 enum { max_length = 1024 };
 
-std::string prepareJsonString(std::pair<double, double> coordinates, std::vector<std::pair<std::string, int>> list)
+std::string prepareJsonString(std::pair<double, double> coordinates, std::vector<std::pair<unsigned, unsigned>> list)
 {
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -33,7 +33,7 @@ std::string prepareJsonString(std::pair<double, double> coordinates, std::vector
         {
             writer.StartObject();
             writer.Key("Id");
-            writer.String(std::get<0>(*it).c_str(), std::get<0>(*it).length());
+            writer.String(std::get<0>(*it));
             writer.Key("Count");
             writer.Int(std::get<1>(*it));
             writer.EndObject();
@@ -52,8 +52,8 @@ int main(int argc, char* argv[])
     std::pair<double, double> coordinates{55.1234, 34.1234};
 
     std::vector<std::pair<std::string, int>> list;
-    list.push_back(std::pair<std::string, int> {"аспирин))", 1});
-    list.push_back(std::pair<std::string, int> {"drug2", 88});
+    list.push_back(std::pair<std::string, int> {1, 1});
+    list.push_back(std::pair<std::string, int> {333, 88});
     for(auto it = list.begin(); it < list.end(); ++it)
         std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << std::endl;
         
