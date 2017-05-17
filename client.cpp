@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
         std::cout << std::get<0>(*it) << " " << std::get<1>(*it) << std::endl;
         
     std::string json_list = prepareJsonString(coordinates, list);
-    std::cout << json_list << std::endl;
+    //std::cout << json_list << std::endl;
 
   try
   {
@@ -73,13 +73,14 @@ int main(int argc, char* argv[])
     tcp::socket s(io_service);
     tcp::resolver resolver(io_service);
     boost::asio::connect(s, resolver.resolve({argv[1], argv[2]}));
+    for(size_t i = 0; i < 10; ++i){
+        s.send(boost::asio::buffer(json_list, json_list.length()));
+        std::cout << "write: " << json_list << std::endl;
 
-    s.send(boost::asio::buffer(json_list, json_list.length()));
-    std::cout << "write: " << json_list << std::endl;
-
-    std::string reply(max_length, '\0');
-    size_t reply_length = s.read_some(boost::asio::buffer((char*)reply.c_str(), max_length));
-    std::cout << "Reply is: " << reply << ", size: " << reply.length() << std::endl;
+        std::string reply(max_length, '\0');
+        size_t reply_length = s.read_some(boost::asio::buffer((char*)reply.c_str(), max_length));
+        std::cout << "Reply is: " << reply << ", size: " << reply.length() << std::endl;
+        }
 
   }
   catch (std::exception& e)
